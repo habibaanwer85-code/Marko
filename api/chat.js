@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       return { role, parts: [{ text: m.content || "" }] };
     });
 
-    const model = "gemini-2.5-flash";
+    const model = "gemini-3.6-flash";
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
     const response = await fetch(url, {
