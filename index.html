@@ -11,50 +11,152 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap');
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
   body {
     font-family: 'Tajawal', sans-serif;
-    background: #12181c;
-    background-image: radial-gradient(circle at 85% -10%, rgba(184,146,61,0.10), transparent 45%);
+    background: #1a2228;
+    background-image: radial-gradient(circle at 85% -10%, rgba(184,146,61,0.13), transparent 45%);
     color: #ede6d6;
   }
-  #root { min-height: 100vh; }
-  .marko-app {
-    min-height: 100vh;
+  #root { height: 100vh; }
+
+  .app-shell { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 270px;
+    flex-shrink: 0;
+    background: #161d22;
+    border-inline-start: 1px solid rgba(237,230,214,0.08);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 16px;
+    height: 100vh;
+    transition: margin-inline-start 0.25s ease;
+    position: relative;
+    z-index: 20;
   }
-  .shell { width: 100%; max-width: 640px; display: flex; flex-direction: column; height: 92vh; }
-  .logo-img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
-  .header { display: flex; align-items: center; gap: 14px; padding-bottom: 18px; border-bottom: 1px solid rgba(237,230,214,0.1); margin-bottom: 16px; }
-  .title-block h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: 0.3px; }
-  .title-block p { margin: 2px 0 0; font-size: 12.5px; color: rgba(237,230,214,0.55); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.4px; }
-  .stage-rail { display: flex; align-items: center; margin-bottom: 18px; padding: 0 2px; }
+  .sidebar.closed { margin-inline-start: -270px; }
+  .sidebar-header { padding: 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(237,230,214,0.08); }
+  .sidebar-logo { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
+  .sidebar-title { font-weight: 800; font-size: 14.5px; }
+
+  .sidebar-tabs { display: flex; gap: 4px; padding: 10px 10px 4px; }
+  .sidebar-tab {
+    flex: 1; text-align: center; padding: 8px 4px; border-radius: 8px; cursor: pointer;
+    font-size: 11.5px; font-weight: 700; color: rgba(237,230,214,0.55);
+    border: 1px solid transparent; transition: all 0.15s;
+  }
+  .sidebar-tab.active { background: rgba(104,196,133,0.14); color: #68c485; border-color: rgba(104,196,133,0.3); }
+  .sidebar-tab:hover:not(.active) { background: rgba(237,230,214,0.05); }
+
+  .new-chat-btn {
+    margin: 10px 14px 6px;
+    display: flex; align-items: center; gap: 8px;
+    background: #1e2933; border: 1px solid rgba(104,196,133,0.3); color: #ede6d6;
+    border-radius: 10px; padding: 10px 12px; font-family: 'Tajawal', sans-serif; font-size: 13.5px; font-weight: 700;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .new-chat-btn:hover { border-color: #68c485; background: #223028; }
+  .conv-list { flex: 1; overflow-y: auto; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 3px; }
+  .conv-list::-webkit-scrollbar { width: 4px; }
+  .conv-list::-webkit-scrollbar-thumb { background: rgba(237,230,214,0.12); border-radius: 4px; }
+  .conv-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 10px; border-radius: 9px; cursor: pointer;
+    font-size: 13px; color: rgba(237,230,214,0.75);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: background 0.15s;
+  }
+  .conv-item:hover { background: rgba(237,230,214,0.06); }
+  .conv-item.active { background: rgba(104,196,133,0.14); color: #ede6d6; }
+  .conv-item span.label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .conv-delete { opacity: 0; flex-shrink: 0; background: transparent; border: none; color: rgba(237,230,214,0.5); cursor: pointer; font-size: 13px; padding: 2px 4px; }
+  .conv-item:hover .conv-delete { opacity: 1; }
+  .conv-delete:hover { color: #e08080; }
+  .sidebar-empty { padding: 16px 14px; font-size: 12.5px; color: rgba(237,230,214,0.4); line-height: 1.7; }
+
+  .sidebar-nav-btn {
+    margin: 10px 14px 6px; display: flex; align-items: center; gap: 8px;
+    background: transparent; border: 1px solid rgba(237,230,214,0.12); color: rgba(237,230,214,0.8);
+    border-radius: 10px; padding: 10px 12px; font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .sidebar-nav-btn:hover { border-color: #68c485; color: #68c485; }
+  .brand-status { padding: 10px 14px; font-size: 11.5px; color: rgba(237,230,214,0.45); line-height: 1.7; }
+  .brand-status.set { color: #68c485; }
+
+  .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 15; display: none; }
+  .sidebar-overlay.show { display: block; }
+
+  /* ---------- Main area ---------- */
+  .main-area { flex: 1; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(237,230,214,0.08); flex-shrink: 0; }
+  .hamburger { width: 38px; height: 38px; border-radius: 9px; background: transparent; border: 1px solid rgba(237,230,214,0.15); color: rgba(237,230,214,0.8); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; flex-shrink: 0; }
+  .hamburger:hover { border-color: #68c485; color: #68c485; }
+  .topbar .logo-img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+  .topbar .title-block h1 { margin: 0; font-size: 16.5px; font-weight: 900; }
+  .topbar .title-block p { margin: 1px 0 0; font-size: 10.5px; color: rgba(237,230,214,0.5); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.4px; }
+  .save-btn { margin-inline-start: auto; background: transparent; border: 1px solid rgba(237,230,214,0.15); color: rgba(237,230,214,0.7); border-radius: 10px; padding: 8px 12px; font-family: 'Tajawal', sans-serif; font-size: 12.5px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: border-color 0.2s, color 0.2s; }
+  .save-btn:hover { border-color: #68c485; color: #68c485; }
+
+  .stage-rail { display: flex; align-items: center; padding: 12px 16px 0; flex-shrink: 0; }
   .stage-node { display: flex; align-items: center; flex: 1; }
   .stage-node:last-child { flex: 0; }
-  .stage-dot { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgba(237,230,214,0.25); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: rgba(237,230,214,0.45); flex-shrink: 0; transition: all 0.3s ease; }
+  .stage-dot { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid rgba(237,230,214,0.25); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: rgba(237,230,214,0.45); flex-shrink: 0; transition: all 0.3s ease; }
   .stage-node.on .stage-dot { border-color: #b8923d; background: #b8923d; color: #12181c; font-weight: 700; }
-  .stage-label { font-size: 10.5px; color: rgba(237,230,214,0.4); margin-inline-start: 6px; margin-inline-end: 10px; white-space: nowrap; display: none; }
+  .stage-label { font-size: 10px; color: rgba(237,230,214,0.4); margin-inline-start: 6px; margin-inline-end: 10px; white-space: nowrap; display: none; }
   .stage-node.on .stage-label { color: rgba(237,230,214,0.75); }
   .stage-line { flex: 1; height: 1.5px; background: rgba(237,230,214,0.15); margin: 0 4px; }
   .stage-line.on { background: #b8923d; }
-  @media (min-width: 480px) { .stage-label { display: inline; } }
+  @media (min-width: 680px) { .stage-label { display: inline; } }
 
-  .landing { width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: center; text-align: center; margin: auto; }
-  .landing-logo { width: 84px; height: 84px; border-radius: 20px; object-fit: cover; box-shadow: 0 8px 30px rgba(184,146,61,0.18); margin-bottom: 22px; }
-  .landing-title { font-size: 26px; font-weight: 900; margin: 0 0 8px; }
-  .landing-subtitle { font-size: 14.5px; color: rgba(237,230,214,0.6); margin: 0 0 34px; line-height: 1.7; }
-  .landing-input-row { width: 100%; margin-top: 0; }
+  .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding: 12px 16px; }
+  .content-area::-webkit-scrollbar { width: 5px; }
+  .content-area::-webkit-scrollbar-thumb { background: rgba(237,230,214,0.15); border-radius: 4px; }
 
-  .messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 4px 2px 12px; }
-  .messages::-webkit-scrollbar { width: 5px; }
-  .messages::-webkit-scrollbar-thumb { background: rgba(237,230,214,0.15); border-radius: 4px; }
+  .landing { max-width: 520px; margin: auto; display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
+  .landing-logo { width: 78px; height: 78px; border-radius: 20px; object-fit: cover; box-shadow: 0 8px 30px rgba(184,146,61,0.18); margin-bottom: 20px; }
+  .landing-title { font-size: 24px; font-weight: 900; margin: 0 0 8px; }
+  .landing-subtitle { font-size: 14px; color: rgba(237,230,214,0.6); margin: 0 0 22px; line-height: 1.7; }
+  .landing-brand-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(104,196,133,0.1); border: 1px solid rgba(104,196,133,0.25); color: #68c485; font-size: 12px; padding: 6px 12px; border-radius: 20px; margin-bottom: 24px; }
+
+  .agent-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 4px; }
+  @media (max-width: 480px) { .agent-cards { grid-template-columns: 1fr; } }
+  .agent-card {
+    background: #1c252b; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px;
+    padding: 14px; text-align: right; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .agent-card:hover { border-color: #68c485; background: #202a30; }
+  .agent-card .agent-icon { font-size: 20px; margin-bottom: 6px; display: block; }
+  .agent-card .agent-name { font-weight: 800; font-size: 13.5px; margin-bottom: 4px; }
+  .agent-card .agent-desc { font-size: 11.5px; color: rgba(237,230,214,0.5); line-height: 1.6; }
+
+  .crm-form { background: #1c252b; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+  .crm-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  @media (max-width: 480px) { .crm-form-grid { grid-template-columns: 1fr; } }
+  .crm-form input, .crm-form select, .crm-form textarea { width: 100%; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 8px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 13px; padding: 9px 11px; }
+  .crm-add-btn { background: #68c485; color: #0f1c14; border: none; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; }
+
+  .crm-table-wrap { overflow-x: auto; }
+  .crm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .crm-table th, .crm-table td { border: 1px solid rgba(237,230,214,0.1); padding: 9px 10px; text-align: right; white-space: nowrap; }
+  .crm-table th { background: rgba(184,146,61,0.12); color: #d9b96a; font-weight: 700; }
+  .crm-table tr:nth-child(even) td { background: rgba(237,230,214,0.02); }
+  .crm-del { background: transparent; border: none; color: rgba(237,230,214,0.4); cursor: pointer; font-size: 13px; }
+  .crm-del:hover { color: #e08080; }
+  .crm-empty { font-size: 13px; color: rgba(237,230,214,0.45); padding: 20px 0; text-align: center; }
+  .crm-status { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .crm-status.new { background: rgba(104,196,133,0.15); color: #68c485; }
+  .crm-status.contacted { background: rgba(184,146,61,0.15); color: #d9b96a; }
+  .crm-status.qualified { background: rgba(90,150,220,0.15); color: #7aa8e0; }
+  .crm-status.customer { background: rgba(104,196,133,0.25); color: #68c485; }
+  .crm-status.lost { background: rgba(200,80,80,0.15); color: #e08080; }
+
+  .messages { display: flex; flex-direction: column; gap: 12px; max-width: 720px; width: 100%; margin: 0 auto; padding-bottom: 8px; }
 
   .bubble { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 14.5px; line-height: 1.85; white-space: pre-wrap; }
-  .bubble.assistant { align-self: flex-start; background: #1b2328; border: 1px solid rgba(237,230,214,0.08); border-start-start-radius: 4px; }
+  .bubble.assistant { align-self: flex-start; background: #242e35; border: 1px solid rgba(237,230,214,0.08); border-start-start-radius: 4px; }
   .bubble.user { align-self: flex-end; background: linear-gradient(135deg, #3e6b63, #2c4d47); color: #f2f6f4; border-start-end-radius: 4px; }
   .bubble-image { max-width: 220px; border-radius: 10px; display: block; margin-bottom: 8px; }
 
@@ -67,28 +169,71 @@
   .md-table th { background: rgba(184,146,61,0.14); color: #d9b96a; font-weight: 700; }
   .md-table tr:nth-child(even) td { background: rgba(237,230,214,0.03); }
 
-  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 14px 16px; background: #1b2328; border-radius: 14px; border-start-start-radius: 4px; }
+  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 14px 16px; background: #242e35; border-radius: 14px; border-start-start-radius: 4px; }
   .typing span { width: 6px; height: 6px; border-radius: 50%; background: #b8923d; animation: bounce 1.2s infinite ease-in-out; }
   .typing span:nth-child(2) { animation-delay: 0.15s; }
   .typing span:nth-child(3) { animation-delay: 0.3s; }
   @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-4px); opacity: 1; } }
 
+  .footer-area { flex-shrink: 0; padding: 10px 16px 16px; max-width: 720px; width: 100%; margin: 0 auto; }
+
   .image-preview { position: relative; display: inline-flex; width: fit-content; margin-bottom: 8px; }
   .image-preview img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(237,230,214,0.15); }
-  .remove-image { position: absolute; top: -6px; left: -6px; width: 20px; height: 20px; border-radius: 50%; background: #1b2328; border: 1px solid rgba(237,230,214,0.25); color: #ede6d6; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; font-size: 12px; line-height: 1; }
+  .remove-image { position: absolute; top: -6px; left: -6px; width: 20px; height: 20px; border-radius: 50%; background: #242e35; border: 1px solid rgba(237,230,214,0.25); color: #ede6d6; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; font-size: 12px; line-height: 1; }
 
-  label.attach { width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px; background: #1b2328; border: 1px solid rgba(237,230,214,0.12); color: rgba(237,230,214,0.75); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s; font-size: 18px; }
+  label.attach { width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px; background: #242e35; border: 1px solid rgba(237,230,214,0.12); color: rgba(237,230,214,0.75); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s; font-size: 18px; }
   label.attach:hover { border-color: #68c485; color: #68c485; }
 
-  .input-row { display: flex; gap: 10px; margin-top: 14px; align-items: flex-end; }
-  textarea { flex: 1; resize: none; background: #1b2328; border: 1px solid rgba(237,230,214,0.12); border-radius: 12px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 14.5px; padding: 12px 14px; min-height: 46px; max-height: 120px; outline: none; }
+  .input-row { display: flex; gap: 10px; align-items: flex-end; }
+  textarea { flex: 1; resize: none; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 12px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 14.5px; padding: 12px 14px; min-height: 46px; max-height: 120px; outline: none; }
   textarea:focus { border-color: #b8923d; }
 
   button.send { background: #68c485; color: #0f1c14; border: none; border-radius: 12px; padding: 0 18px; height: 46px; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
   button.send:disabled { opacity: 0.5; cursor: not-allowed; }
   button.send:focus-visible { outline: 2px solid #ede6d6; outline-offset: 2px; }
 
-  .error-banner { background: rgba(200,80,80,0.12); border: 1px solid rgba(200,80,80,0.3); color: #f0b8b8; font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-bottom: 10px; }
+  .error-banner { background: rgba(200,80,80,0.12); border: 1px solid rgba(200,80,80,0.3); color: #f0b8b8; font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-bottom: 10px; max-width: 720px; margin-inline: auto; }
+
+  /* ---------- Panels (Brand Profile / Calendar) ---------- */
+  .panel-wrap { max-width: 720px; width: 100%; margin: 0 auto; padding-bottom: 24px; }
+  .panel-header { margin-bottom: 18px; }
+  .panel-header h2 { margin: 0 0 4px; font-size: 19px; font-weight: 900; }
+  .panel-header p { margin: 0; font-size: 13px; color: rgba(237,230,214,0.55); line-height: 1.7; }
+
+  .field-group { margin-bottom: 16px; }
+  .field-group label { display: block; font-size: 12.5px; color: rgba(237,230,214,0.6); margin-bottom: 6px; font-weight: 700; }
+  .field-group input, .field-group textarea, .field-group select {
+    width: 100%; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 10px;
+    color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 14px; padding: 11px 13px; outline: none;
+  }
+  .field-group input:focus, .field-group textarea:focus, .field-group select:focus { border-color: #b8923d; }
+  .field-group textarea { resize: vertical; min-height: 70px; }
+
+  .panel-save-btn {
+    background: #68c485; color: #0f1c14; border: none; border-radius: 10px; padding: 12px 22px;
+    font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer;
+  }
+  .panel-save-note { display: inline-block; margin-inline-start: 12px; font-size: 12.5px; color: #68c485; }
+
+  .cal-form { background: #1c252b; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+  .cal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  @media (max-width: 480px) { .cal-form-grid { grid-template-columns: 1fr; } }
+  .cal-form input, .cal-form select { width: 100%; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 8px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 13px; padding: 9px 11px; }
+  .cal-add-btn { background: #68c485; color: #0f1c14; border: none; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; }
+
+  .cal-table-wrap { overflow-x: auto; }
+  .cal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cal-table th, .cal-table td { border: 1px solid rgba(237,230,214,0.1); padding: 9px 10px; text-align: right; white-space: nowrap; }
+  .cal-table th { background: rgba(184,146,61,0.12); color: #d9b96a; font-weight: 700; }
+  .cal-table tr:nth-child(even) td { background: rgba(237,230,214,0.02); }
+  .cal-del { background: transparent; border: none; color: rgba(237,230,214,0.4); cursor: pointer; font-size: 13px; }
+  .cal-del:hover { color: #e08080; }
+  .cal-empty { font-size: 13px; color: rgba(237,230,214,0.45); padding: 20px 0; text-align: center; }
+
+  @media (max-width: 720px) {
+    .sidebar { position: fixed; inset-block: 0; inset-inline-start: 0; width: 270px; }
+    .sidebar.closed { margin-inline-start: -270px; }
+  }
 </style>
 </head>
 <body>
@@ -98,6 +243,10 @@
 const { useState, useRef, useEffect } = React;
 
 const LOGO_SRC = "data:image/jpeg;base64,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";
+const CONV_KEY = "marko_conversations_v1";
+const BRAND_KEY = "marko_brand_profile_v1";
+const CAL_KEY = "marko_calendar_v1";
+const CRM_KEY = "marko_crm_v1";
 
 const STAGES = [
   { id: 1, label: "التحليل والاستراتيجية" },
@@ -106,7 +255,7 @@ const STAGES = [
   { id: 4, label: "الردود والـ KPIs" },
 ];
 
-const SYSTEM_PROMPT = `أنت "ماركو" (MARKO) — المستشار التنفيذي التسويقي والمدير الإبداعي الآلي المتكامل.
+const BASE_SYSTEM_PROMPT = `أنت "ماركو" (MARKO) — المستشار التنفيذي التسويقي والمدير الإبداعي الآلي المتكامل.
 
 القواعد الصارمة:
 1. القاعدة الصفرية: ممنوع اختراع أسعار أو عروض أو مواصفات أو ميزات تنافسية غير مذكورة صراحة من العميل. لو المعلومة ناقصة، اسأل عنها بدل ما تخترعها.
@@ -125,7 +274,49 @@ const SYSTEM_PROMPT = `أنت "ماركو" (MARKO) — المستشار التن
 
 لو المستخدم بعت صورة (تصميم، سكرين شوت، منتج، منافس...)، حللها من ناحية تسويقية بالتفصيل بناءً على سياق الكلام.
 
-مهم: خلي إجابتك كاملة ومنظمة من غير ما تتقطع في النص، ولو الموضوع طويل قسّمه بعناوين وجداول واضحة بدل ما تدخل في فقرة واحدة طويلة.`;
+مهم: خلي إجابتك كاملة ومنظمة من غير ما تتقطع في النص، ولو الموضوع طويل قسّمه بعناوين وجداول واضحة بدل ما تدخل في فقرة واحدة طويلة.
+
+عمق الرد: متكتفيش بنقاط سطحية. لكل عنصر في تحليلك (منافس، Persona، محور محتوى...) اكتبي تفصيلة أو سبب أو مثال عملي يوضح الفايدة، مش بس اسم أو عنوان مجرد. في نصوص البوستات والإعلانات، اكتبي النص كامل جاهز للنشر مباشرة، مش ملخص أو تصور عام.`;
+
+const PLATFORMS = ["Instagram", "Facebook", "TikTok", "LinkedIn", "X", "Google Ads", "YouTube", "Snapchat"];
+const CONTENT_TYPES = ["بوست", "ريلز/فيديو", "ستوري", "إعلان ممول", "مقال/بلوج", "إيميل"];
+const CRM_STATUSES = [
+  { value: "new", label: "جديد" },
+  { value: "contacted", label: "تم التواصل" },
+  { value: "qualified", label: "مهتم" },
+  { value: "customer", label: "عميل" },
+  { value: "lost", label: "غير مهتم" },
+];
+const AGENTS = [
+  {
+    id: "strategy",
+    icon: "🧠",
+    name: "وكيل الاستراتيجية والتحليل",
+    desc: "تحليل منافسين، Persona، USP، SWOT",
+    prompt: "ابدأ معايا في مرحلة التحليل والاستراتيجية 
+  },
+  {
+    id: "planning",
+    icon: "🗓️",
+    name: "وكيل التخطيط والجدولة",
+    desc: "تقويم مناسبات وجدول محتوى شهري",
+    prompt: "ابدأ معايا في مرحلة التخطيط والجدولة (المرحلة الثانية): تقويم المناسبات المرتبطة بمجالي، وجدول محتوى شهري كامل.",
+  },
+  {
+    id: "content",
+    icon: "✍️",
+    name: "وكيل المحتوى والإعلانات",
+    desc: "بوستات وإعلانات جاهزة للنشر",
+    prompt: "ابدأ معايا في مرحلة إنتاج المحتوى والإعلانات (المرحلة الثالثة): اكتبلي نصوص بوستات كاملة ونصوص إعلانات بالثلاث أساليب (مشكلة وحل، قصة، عرض مباشر).",
+  },
+  {
+    id: "kpi",
+    icon: "📊",
+    name: "وكيل الردود والـ KPIs",
+    desc: "مصفوفة ردود ومؤشرات أداء",
+    prompt: "ابدأ معايا في مرحلة الردود وقياس الأداء (المرحلة الرابعة): مصفوفة ردود آلية للتعليقات والرسائل، وقائمة KPIs مناسبة لحملتي.",
+  },
+];
 
 function InlineText({ text }) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g).filter((p) => p !== "");
@@ -214,19 +405,272 @@ function StageRail({ activeStage }) {
   );
 }
 
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function saveJSON(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {}
+}
+
+function makeTitle(text) {
+  const clean = (text || "").trim().replace(/\s+/g, " ");
+  if (!clean) return "محادثة جديدة";
+  return clean.length > 32 ? clean.slice(0, 32) + "…" : clean;
+  }
+  function brandProfileToText(b) {
+  if (!b) return "";
+  const rows = [
+    ["اسم البراند/الشركة", b.name],
+    ["مجال العمل والمنتجات/الخدمات", b.industry],
+    ["الفئة السعرية/العروض", b.priceTier],
+    ["الميزة التنافسية (USP)", b.usp],
+    ["الجمهور المستهدف", b.audience],
+    ["المنصات المستهدفة", b.platforms],
+    ["ملاحظات إضافية عن أسلوب البراند", b.notes],
+  ].filter(([, v]) => v && v.trim());
+  if (rows.length === 0) return "";
+  const lines = rows.map(([k, v]) => `- ${k}: ${v}`).join("\n");
+  return `\n\nبيانات البراند المحفوظة لهذا العميل (متاحة بالفعل، لا تطلبيها من المستخدم تاني إلا لو غيّرت رأيها):\n${lines}`;
+}
+
+/* ---------------- Brand Profile Panel ---------------- */
+function BrandPanel({ brand, onSave }) {
+  const [form, setForm] = useState(brand || { name: "", industry: "", priceTier: "", usp: "", audience: "", platforms: "", notes: "" });
+  const [savedFlash, setSavedFlash] = useState(false);
+
+  function update(field, value) { setForm((f) => ({ ...f, [field]: value })); }
+
+  function handleSave() {
+    onSave(form);
+    setSavedFlash(true);
+    setTimeout(() => setSavedFlash(false), 2500);
+  }
+
+  const fields = [
+    { key: "name", label: "اسم البراند/الشركة", type: "input" },
+    { key: "industry", label: "مجال العمل والمنتجات/الخدمات", type: "textarea" },
+    { key: "priceTier", label: "الفئة السعرية/العروض", type: "input" },
+    { key: "usp", label: "الميزة التنافسية الرئيسية (USP)", type: "textarea" },
+    { key: "audience", label: "الجمهور المستهدف (السن/الجنس/الموقع)", type: "input" },
+    { key: "platforms", label: "المنصات المستهدفة", type: "input" },
+    { key: "notes", label: "ملاحظات إضافية عن أسلوب البراند (اختياري)", type: "textarea" },
+  ];
+
+  return (
+    <div className="panel-wrap">
+      <div className="panel-header">
+        <h2>ملف البراند</h2>
+        <p>احفظي بيانات البراند مرة واحدة، وماركو هيفتكرها تلقائيًا في كل محادثة جديدة من غير ما تكرريها.</p>
+      </div>
+      {fields.map((f) => (
+        <div className="field-group" key={f.key}>
+          <label>{f.label}</label>
+          {f.type === "textarea" ? (
+            <textarea value={form[f.key] || ""} onChange={(e) => update(f.key, e.target.value)} />
+          ) : (
+            <input value={form[f.key] || ""} onChange={(e) => update(f.key, e.target.value)} />
+          )}
+        </div>
+      ))}
+      <button className="panel-save-btn" onClick={handleSave}>حفظ ملف البراند</button>
+      {savedFlash && <span className="panel-save-note">✓ اتحفظ بنجاح</span>}
+    </div>
+  );
+}
+
+/* ---------------- Content Calendar Panel ---------------- */
+function CalendarPanel({ items, onAdd, onDelete }) {
+  const [date, setDate] = useState("");
+  const [platform, setPlatform] = useState(PLATFORMS[0]);
+  const [type, setType] = useState(CONTENT_TYPES[0]);
+  const [topic, setTopic] = useState("");
+  const [goal, setGoal] = useState("");
+
+  function handleAdd() {
+    if (!date || !topic.trim()) return;
+    onAdd({ id: Date.now(), date, platform, type, topic: topic.trim(), goal: goal.trim() });
+    setDate(""); setTopic(""); setGoal("");
+  }
+
+  const sorted = [...items].sort((a, b) => (a.date > b.date ? 1 : -1));
+
+  return (
+    <div className="panel-wrap">
+      <div className="panel-header">
+        <h2>تقويم المحتوى</h2>
+        <p>ضيفي خطة المحتوى الشهرية بتاريخها ومنصتها وهدفها، وهتفضل محفوظة هنا تراجعيها وقت ما تحتاجي.</p>
+      </div>
+
+      <div className="cal-form">
+        <div className="cal-form-grid">
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <select value={platform} onChange={(e) => setPlatform(e.target.value)}>
+            {PLATFORMS.map((p) => <option key={p} value={p}>{p}</option>)}
+          </select>
+          <select value={type} onChange={(e) => setType(e.target.value)}>
+            {CONTENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+          <input placeholder="الموضوع/المحور" value={topic} onChange={(e) => setTopic(e.target.value)} />
+        </div>
+        <input placeholder="هدف البوست (اختياري)" value={goal} onChange={(e) => setGoal(e.target.value)} style={{ marginBottom: "10px" }} />
+        <button className="cal-add-btn" onClick={handleAdd}>+ إضافة للتقويم</button>
+      </div>
+
+      {sorted.length === 0 ? (
+        <div className="cal-empty">مفيش عناصر في التقويم لسه. ضيفي أول عنصر من الفورم فوق.</div>
+      ) : (
+        <div className="cal-table-wrap">
+          <table className="cal-table">
+            <thead>
+              <tr><th>التاريخ</th><th>المنصة</th><th>النوع</th><th>الموضوع</th><th>الهدف</th><th></th></tr>
+            </thead>
+            <tbody>
+              {sorted.map((it) => (
+                <tr key={it.id}>
+                  <td>{it.date}</td>
+                  <td>{it.platform}</td>
+                  <td>{it.type}</td>
+                  <td>{it.topic}</td>
+                  <td>{it.goal || "—"}</td>
+                  <td><button className="cal-del" onClick={() => onDelete(it.id)}>✕</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+  
+/* ---------------- CRM Panel ---------------- */
+function CrmPanel({ items, onAdd, onDelete }) {
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [status, setStatus] = useState("new");
+  const [source, setSource] = useState("");
+  const [notes, setNotes] = useState("");
+
+  function handleAdd() {
+    if (!name.trim()) return;
+    onAdd({ id: Date.now(), name: name.trim(), contact: contact.trim(), status, source: source.trim(), notes: notes.trim(), addedAt: new Date().toISOString().slice(0, 10) });
+    setName(""); setContact(""); setSource(""); setNotes("");
+  }
+
+  const statusLabel = (v) => (CRM_STATUSES.find((s) => s.value === v) || {}).label || v;
+  const sorted = [...items].sort((a, b) => b.id - a.id);
+
+  return (
+    <div className="panel-wrap">
+      <div className="panel-header">
+        <h2>العملاء (CRM)</h2>
+        <p>سجّلي الليدز والعملاء بحالتهم، وتابعي رحلتهم من أول تواصل لحد ما يبقوا عملاء فعليين.</p>
+      </div>
+
+      <div className="crm-form">
+        <div className="crm-form-grid">
+          <input placeholder="اسم العميل/الليد" value={name} onChange={(e) => setName(e.target.value)} />
+          <input placeholder="رقم/إيميل التواصل" value={contact} onChange={(e) => setContact(e.target.value)} />
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+            {CRM_STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+          <input placeholder="مصدر الليد (إعلان، إحالة...)" value={source} onChange={(e) => setSource(e.target.value)} />
+        </div>
+        <input placeholder="ملاحظات (اختياري)" value={notes} onChange={(e) => setNotes(e.target.value)} style={{ marginBottom: "10px" }} />
+        <button className="crm-add-btn" onClick={handleAdd}>+ إضافة عميل</button>
+      </div>
+
+      {sorted.length === 0 ? (
+        <div className="crm-empty">مفيش عملاء مسجلين لسه. ضيفي أول عميل من الفورم فوق.</div>
+      ) : (
+        <div className="crm-table-wrap">
+          <table className="crm-table">
+            <thead>
+              <tr><th>الاسم</th><th>التواصل</th><th>الحالة</th><th>المصدر</th><th>تاريخ الإضافة</th><th></th></tr>
+            </thead>
+            <tbody>
+              {sorted.map((it) => (
+                <tr key={it.id}>
+                  <td>{it.name}</td>
+                  <td>{it.contact || "—"}</td>
+                  <td><span className={`crm-status ${it.status}`}>{statusLabel(it.status)}</span></td>
+                  <td>{it.source || "—"}</td>
+                  <td>{it.addedAt}</td>
+                  <td><button className="crm-del" onClick={() => onDelete(it.id)}>✕</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      
+    </div>
+  );
+}
+
 function MarkoApp() {
-  const [messages, setMessages] = useState([]);
+  const [conversations, setConversations] = useState(() => loadJSON(CONV_KEY, []));
+  const [brand, setBrand] = useState(() => loadJSON(BRAND_KEY, null));
+  const [calendar, setCalendar] = useState(() => loadJSON(CAL_KEY, []));
+  const [crm, setCrm] = useState(() => loadJSON(CRM_KEY, []));
+  const [activeId, setActiveId] = useState(null);
+  const [view, setView] = useState("chat"); // chat | brand | calendar
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [activeStage] = useState(1);
   const [pendingImage, setPendingImage] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
-  const scrollRef = useRef(null);
-  const isEmpty = messages.length === 0;
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const contentRef = useRef(null);
+
+  useEffect(() => { saveJSON(CONV_KEY, conversations); }, [conversations]);
+  useEffect(() => { saveJSON(BRAND_KEY, brand); }, [brand]);
+  useEffect(() => { saveJSON(CAL_KEY, calendar); }, [calendar]);
+  useEffect(() => { saveJSON(CRM_KEY, crm); }, [crm]);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, loading]);
+    contentRef.current?.scrollTo({ top: contentRef.current.scrollHeight, behavior: "smooth" });
+  }, [activeId, loading, conversations, view]);
+
+  const activeConv = conversations.find((c) => c.id === activeId) || null;
+  const messages = activeConv ? activeConv.messages : [];
+  const isEmptyChat = !activeConv || messages.length === 0;
+  const hasBrand = !!(brand && brand.name && brand.name.trim());
+
+  function goToChat() { setView("chat"); setSidebarOpen(false); }
+  function goToBrand() { setView("brand"); setSidebarOpen(false); }
+  function goToCalendar() { setView("calendar"); setSidebarOpen(false); }
+  function goToCrm() { setView("crm"); setSidebarOpen(false); }
+
+  function startNewChat() {
+    setActiveId(null);
+    setInput("");
+    setPendingImage(null);
+    setErrorMsg("");
+    setView("chat");
+    setSidebarOpen(false);
+  }
+
+  function selectConversation(id) {
+    setActiveId(id);
+    setErrorMsg("");
+    setView("chat");
+    setSidebarOpen(false);
+  }
+
+  function deleteConversation(id, e) {
+    e.stopPropagation();
+    setConversations((prev) => prev.filter((c) => c.id !== id));
+    if (activeId === id) setActiveId(null);
+  }
 
   function handleFileSelect(e) {
     const file = e.target.files?.[0];
@@ -244,9 +688,44 @@ function MarkoApp() {
 
   function removePendingImage() { setPendingImage(null); }
 
+  function exportConversation() {
+    if (!activeConv) return;
+    const lines = activeConv.messages.map((m) => {
+      const who = m.role === "assistant" ? "ماركو" : "أنا";
+      const imgNote = m.image ? "[صورة مرفقة]\n" : "";
+      return `${who}:\n${imgNote}${m.content}\n`;
+    });
+    const text = lines.join("\n---\n\n");
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const stamp = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `marko-${stamp}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function addCalendarItem(item) { setCalendar((prev) => [...prev, item]); }
+  function deleteCalendarItem(id) { setCalendar((prev) => prev.filter((c) => c.id !== id)); }
+  function addCrmItem(item) { setCrm((prev) => [...prev, item]); }
+  function deleteCrmItem(id) { setCrm((prev) => prev.filter((c) => c.id !== id)); }
+
+  function startAgentChat(agent) {
+    setActiveId(null);
+    setPendingImage(null);
+    setErrorMsg("");
+    setView("chat");
+    setSidebarOpen(false);
+    setInput(agent.prompt);
+  }
+
   async function sendMessage() {
     if ((!input.trim() && !pendingImage) || loading) return;
     setErrorMsg("");
+
     const userMsg = {
       role: "user",
       content: input.trim(),
@@ -254,19 +733,36 @@ function MarkoApp() {
       mediaType: pendingImage?.mediaType || null,
       base64: pendingImage?.base64 || null,
     };
-    const newMessages = [...messages, userMsg];
-    setMessages(newMessages);
+
+    let convId = activeId;
+    let historyForApi;
+
+    if (!convId) {
+      convId = Date.now();
+      const newConv = { id: convId, title: makeTitle(userMsg.content), messages: [userMsg] };
+      setConversations((prev) => [newConv, ...prev]);
+      setActiveId(convId);
+      historyForApi = [userMsg];
+    } else {
+      setConversations((prev) =>
+        prev.map((c) => (c.id === convId ? { ...c, messages: [...c.messages, userMsg] } : c))
+      );
+      const current = conversations.find((c) => c.id === convId);
+      historyForApi = current ? [...current.messages, userMsg] : [userMsg];
+    }
+
     setInput("");
     setPendingImage(null);
     setLoading(true);
+    const effectiveSystemPrompt = BASE_SYSTEM_PROMPT + brandProfileToText(brand);
 
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system: SYSTEM_PROMPT,
-          messages: newMessages.map((m) => {
+          system: effectiveSystemPrompt,
+          messages: historyForApi.map((m) => {
             if (m.role === "user" && m.image) {
               return {
                 role: "user",
@@ -285,7 +781,10 @@ function MarkoApp() {
         throw new Error(data.error?.message || data.error || "حصل خطأ في السيرفر");
       }
       const text = (data.content || []).map((b) => (b.type === "text" ? b.text : "")).filter(Boolean).join("\n");
-      setMessages((prev) => [...prev, { role: "assistant", content: text || "معلش، مش قادر أرد دلوقتي. جرّبي تاني." }]);
+      const assistantMsg = { role: "assistant", content: text || "معلش، مش قادر أرد دلوقتي. جرّبي تاني." };
+      setConversations((prev) =>
+        prev.map((c) => (c.id === convId ? { ...c, messages: [...c.messages, assistantMsg] } : c))
+      );
     } catch (e) {
       setErrorMsg(e.message || "حصل خطأ في الاتصال بالسيرفر.");
     } finally {
@@ -311,64 +810,116 @@ function MarkoApp() {
     </div>
   );
 
+  const sortedConvs = [...conversations].sort((a, b) => b.id - a.id);
+
   return (
-    <div className="marko-app" dir="rtl">
-      {isEmpty ? (
-        <div className="landing">
-          <img src={LOGO_SRC} alt="Marko" className="landing-logo" />
-          <h1 className="landing-title">أهلا، أنا Marko</h1>
-          <p className="landing-subtitle">المستشار التنفيذي التسويقي بتاعك. قولي أقدر أساعدك إزاي؟</p>
-          {errorMsg && <div className="error-banner">{errorMsg}</div>}
-          {ImagePreview}
-          <div className="input-row landing-input-row">
-            {AttachInput}
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="اكتبي بيانات البراند أو سؤالك هنا..."
-              autoFocus
-            />
-            <button className="send" onClick={sendMessage} disabled={loading}>{loading ? "..." : "➤"}</button>
-          </div>
+    <div className="app-shell" dir="rtl">
+      <div className={`sidebar-overlay ${sidebarOpen ? "show" : ""}`} onClick={() => setSidebarOpen(false)} />
+
+      <div className={`sidebar ${sidebarOpen ? "" : "closed"}`}>
+        <div className="sidebar-header">
+          <img src={LOGO_SRC} alt="Marko" className="sidebar-logo" />
+          <span className="sidebar-title">ماركو — MARKO</span>
         </div>
-      ) : (
-        <div className="shell">
-          <div className="header">
-            <img src={LOGO_SRC} alt="Marko" className="logo-img" />
-            <div className="title-block">
-              <h1>ماركو — MARKO</h1>
-              <p>MARKETING OPERATING SYSTEM</p>
+
+        <div className="sidebar-tabs">
+          <div className={`sidebar-tab ${view === "chat" ? "active" : ""}`} onClick={goToChat}>المحادثات</div>
+          <div className={`sidebar-tab ${view === "crm" ? "active" : ""}`} onClick={goToCrm}>العملاء</div>
+        </div>
+        <div className="sidebar-tabs" style={{ paddingTop: 0 }}>
+          <div className={`sidebar-tab ${view === "brand" ? "active" : ""}`} onClick={goToBrand}>ملف البراند</div>
+          <div className={`sidebar-tab ${view === "calendar" ? "active" : ""}`} onClick={goToCalendar}>التقويم</div>
+        </div>
+
+        {view === "chat" ? (
+          <React.Fragment>
+            <button className="new-chat-btn" onClick={startNewChat}>+ محادثة جديدة</button>
+            <div className="conv-list">
+              {sortedConvs.length === 0 && <div className="sidebar-empty">مفيش محادثات محفوظة لسه. ابدئي أول محادثة وهتلاقيها هنا.</div>}
+              {sortedConvs.map((c) => (
+                <div key={c.id} className={`conv-item ${c.id === activeId ? "active" : ""}`} onClick={() => selectConversation(c.id)}>
+                  <span className="label">{c.title}</span>
+                  <button className="conv-delete" onClick={(e) => deleteConversation(c.id, e)} title="حذف">✕</button>
+                </div>
+              ))}
+            </div>
+          </React.Fragment>
+        ) : (
+          <div className={`brand-status ${hasBrand ? "set" : ""}`}>
+            {hasBrand ? `✓ ملف براند "${brand.name}" محفوظ ومتاح لماركو` : "لسه معملتيش ملف براند. احفظيه من التاب ده."}
+          </div>
+        )}
+      </div>
+
+      <div className="main-area">
+        <div className="topbar">
+          <button className="hamburger" onClick={() => setSidebarOpen((v) => !v)} title="القائمة">☰</button>
+          <img src={LOGO_SRC} alt="Marko" className="logo-img" />
+          <div className="title-block">
+            <h1>ماركو</h1>
+            <p>MARKETING OPERATING SYSTEM</p>
+          </div>
+          {view === "chat" && activeConv && messages.length > 0 && (
+            <button className="save-btn" onClick={exportConversation} title="تحميل المحادثة">💾 حفظ</button>
+          )}
+        </div>
+
+        {view === "chat" && !isEmptyChat && <StageRail activeStage={1} />}
+
+        <div className="content-area" ref={contentRef}>
+          {view === "brand" ? (
+            <BrandPanel brand={brand} onSave={setBrand} />
+          ) : view === "calendar" ? (
+            <CalendarPanel items={calendar} onAdd={addCalendarItem} onDelete={deleteCalendarItem} />
+          ) : view === "crm" ? (
+            <CrmPanel items={crm} onAdd={addCrmItem} onDelete={deleteCrmItem} />
+          ) : isEmptyChat ? (
+            <div className="landing">
+              <img src={LOGO_SRC} alt="Marko" className="landing-logo" />
+              <h1 className="landing-title">أهلا، أنا Marko</h1>
+              <p className="landing-subtitle">المستشار التنفيذي التسويقي بتاعك. قولي أقدر أساعدك إزاي؟</p>
+              {hasBrand && <div className="landing-brand-chip">🏷️ شغالة على براند: {brand.name}</div>}
+              <div className="agent-cards">
+                {AGENTS.map((a) => (
+                  <div key={a.id} className="agent-card" onClick={() => startAgentChat(a)}>
+                    <span className="agent-icon">{a.icon}</span>
+                    <div className="agent-name">{a.name}</div>
+                    <div className="agent-desc">{a.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="messages">
+              {messages.map((m, i) => (
+                <div key={i} className={`bubble ${m.role}`}>
+                  {m.image && <img src={m.image} alt="مرفق" className="bubble-image" />}
+                  {m.role === "assistant" ? <MarkdownContent content={m.content} /> : m.content}
+                </div>
+              ))}
+              {loading && <div className="typing"><span></span><span></span><span></span></div>}
+            </div>
+          )}
+        </div>
+
+        {view === "chat" && (
+          <div className="footer-area">
+            {errorMsg && <div className="error-banner">{errorMsg}</div>}
+            {ImagePreview}
+            <div className="input-row">
+              {AttachInput}
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={isEmptyChat ? "اكتبي بيانات البراند أو سؤالك هنا..." : "اكتبي ردك هنا..."}
+                autoFocus
+              />
+              <button className="send" onClick={sendMessage} disabled={loading}>{loading ? "..." : "➤"}</button>
             </div>
           </div>
-
-          <StageRail activeStage={activeStage} />
-
-          <div className="messages" ref={scrollRef}>
-            {messages.map((m, i) => (
-              <div key={i} className={`bubble ${m.role}`}>
-                {m.image && <img src={m.image} alt="مرفق" className="bubble-image" />}
-                {m.role === "assistant" ? <MarkdownContent content={m.content} /> : m.content}
-              </div>
-            ))}
-            {loading && <div className="typing"><span></span><span></span><span></span></div>}
-          </div>
-
-          {errorMsg && <div className="error-banner">{errorMsg}</div>}
-          {ImagePreview}
-
-          <div className="input-row">
-            {AttachInput}
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="اكتبي بيانات البراند أو ردك هنا..."
-            />
-            <button className="send" onClick={sendMessage} disabled={loading}>{loading ? "..." : "➤"}</button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -377,3 +928,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<MarkoApp />);
 </script>
 </body>
 </html>
+  
