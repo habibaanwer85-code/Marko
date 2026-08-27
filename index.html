@@ -293,7 +293,7 @@ const AGENTS = [
     icon: "🧠",
     name: "وكيل الاستراتيجية والتحليل",
     desc: "تحليل منافسين، Persona، USP، SWOT",
-    prompt: "ابدأ معايا في مرحلة التحليل والاستراتيجية 
+    prompt: "ابدأ معايا في مرحلة التحليل والاستراتيجية (المرحلة الأولى): تحليل المنافسين، بروفايل العميل المستهدف، الـ USP والـ Positioning، محاور المحتوى، ومصفوفة SWOT.",
   },
   {
     id: "planning",
@@ -425,8 +425,9 @@ function makeTitle(text) {
   const clean = (text || "").trim().replace(/\s+/g, " ");
   if (!clean) return "محادثة جديدة";
   return clean.length > 32 ? clean.slice(0, 32) + "…" : clean;
-  }
-  function brandProfileToText(b) {
+}
+
+function brandProfileToText(b) {
   if (!b) return "";
   const rows = [
     ["اسم البراند/الشركة", b.name],
@@ -551,7 +552,7 @@ function CalendarPanel({ items, onAdd, onDelete }) {
     </div>
   );
 }
-  
+
 /* ---------------- CRM Panel ---------------- */
 function CrmPanel({ items, onAdd, onDelete }) {
   const [name, setName] = useState("");
@@ -612,7 +613,6 @@ function CrmPanel({ items, onAdd, onDelete }) {
           </table>
         </div>
       )}
-      
     </div>
   );
 }
@@ -754,6 +754,7 @@ function MarkoApp() {
     setInput("");
     setPendingImage(null);
     setLoading(true);
+
     const effectiveSystemPrompt = BASE_SYSTEM_PROMPT + brandProfileToText(brand);
 
     try {
@@ -928,4 +929,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(<MarkoApp />);
 </script>
 </body>
 </html>
-  
