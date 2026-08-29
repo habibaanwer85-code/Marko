@@ -66,7 +66,7 @@ async function callGroqRaw(messages, system, apiKey) {
     body: JSON.stringify({
       model: "openai/gpt-oss-120b",
       messages: openaiMessages,
-      max_tokens: 8192,
+      max_tokens: 2000,
     }),
   });
 
