@@ -64,7 +64,7 @@ async function callGroqRaw(messages, system, apiKey) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       messages: openaiMessages,
       max_tokens: 8192,
     }),
@@ -129,4 +129,4 @@ async function callGemini(req, res, messages, system) {
   const parts = data.candidates?.[0]?.content?.parts || [];
   const text = parts.map((p) => p.text || "").join("");
   return res.status(200).json({ content: [{ type: "text", text }] });
-  }
+}
