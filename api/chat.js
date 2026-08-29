@@ -48,7 +48,12 @@ async function callGroqRaw(messages, system, apiKey) {
   const openaiMessages = [];
   if (system) openaiMessages.push({ role: "system", content: system });
 
-  for (const m of messages) {
+  // نبعت بس آخر 6 رسايل من المحادثة (مش كل التاريخ) عشان نفضل تحت حد
+  // Groq المجاني للتوكنز في الدقيقة (8000)، حتى لو المحادثة طالت.
+  const RECENT_MESSAGES_LIMIT = 6;
+  const recentMessages = messages.slice(-RECENT_MESSAGES_LIMIT);
+
+  for (const m of recentMessages) {
     if (Array.isArray(m.content)) {
       const textPart = m.content.find((b) => b.type === "text");
       openaiMessages.push({ role: m.role, content: textPart?.text || "" });
@@ -58,6 +63,7 @@ async function callGroqRaw(messages, system, apiKey) {
   }
 
   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+
     method: "POST",
     headers: {
       "Content-Type": "application/json",
