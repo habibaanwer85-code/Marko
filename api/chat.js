@@ -23,15 +23,27 @@ export default async function handler(req, res) {
       return await callGemini(req, res, messages, system);
     }
 
-    // حاولي Groq الأول
+    // حاولي Groq الأول (مع إعادة محاولة واحدة لو الخطأ بسبب rate limit مؤقت)
     const groqKey = process.env.GROQ_API_KEY;
     if (groqKey) {
-      try {
-        const text = await callGroqRaw(messages, system, groqKey);
-        return res.status(200).json({ content: [{ type: "text", text }] });
-      } catch (groqErr) {
-        console.error("Groq failed, falling back to Gemini:", groqErr.message);
-        // نكمل تحت على Gemini بدل ما نرجع خطأ للمستخدم
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const text = await callGroqRaw(messages, system, groqKey);
+          return res.status(200).json({ content: [{ type: "text", text }] });
+        } catch (groqErr) {
+          const waitMatch = /try again in (\d+(\.\d+)?)s/i.exec(groqErr.message || "");
+          const isRateLimit = /rate limit|429/i.test(groqErr.message || "");
+
+          if (isRateLimit && attempt === 1) {
+            // استني المدة اللي Groq طلبها (بحد أقصى 8 ثواني عشان منعديش وقت التنفيذ) وحاولي تاني
+            const waitSeconds = waitMatch ? Math.min(parseFloat(waitMatch[1]) + 0.5, 8) : 3;
+            await new Promise((r) => setTimeout(r, waitSeconds * 1000));
+            continue;
+          }
+
+          console.error("Groq failed, falling back to Gemini:", groqErr.message);
+          break; // نكمل تحت على Gemini
+        }
       }
     }
 
