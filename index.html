@@ -14,7 +14,7 @@
   html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
   body {
     font-family: 'Tajawal', sans-serif;
-    background: #1a2228;
+    background: #151b17;
     background-image: radial-gradient(circle at 85% -10%, rgba(184,146,61,0.13), transparent 45%);
     color: #ede6d6;
   }
@@ -26,7 +26,7 @@
   .sidebar {
     width: 270px;
     flex-shrink: 0;
-    background: #161d22;
+    background: #121712;
     border-inline-start: 1px solid rgba(237,230,214,0.08);
     display: flex;
     flex-direction: column;
@@ -52,7 +52,7 @@
   .new-chat-btn {
     margin: 10px 14px 6px;
     display: flex; align-items: center; gap: 8px;
-    background: #1e2933; border: 1px solid rgba(139,168,148,0.3); color: #ede6d6;
+    background: #1b241d; border: 1px solid rgba(139,168,148,0.3); color: #ede6d6;
     border-radius: 10px; padding: 10px 12px; font-family: 'Tajawal', sans-serif; font-size: 13.5px; font-weight: 700;
     cursor: pointer; transition: border-color 0.2s, background 0.2s;
   }
@@ -104,7 +104,7 @@
   .stage-node { display: flex; align-items: center; flex: 1; }
   .stage-node:last-child { flex: 0; }
   .stage-dot { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid rgba(237,230,214,0.25); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: rgba(237,230,214,0.45); flex-shrink: 0; transition: all 0.3s ease; }
-  .stage-node.on .stage-dot { border-color: #b8923d; background: #b8923d; color: #12181c; font-weight: 700; }
+  .stage-node.on .stage-dot { border-color: #b8923d; background: #b8923d; color: #141b15; font-weight: 700; }
   .stage-label { font-size: 10px; color: rgba(237,230,214,0.4); margin-inline-start: 6px; margin-inline-end: 10px; white-space: nowrap; display: none; }
   .stage-node.on .stage-label { color: rgba(237,230,214,0.75); }
   .stage-line { flex: 1; height: 1.5px; background: rgba(237,230,214,0.15); margin: 0 4px; }
@@ -122,9 +122,27 @@
   .landing-brand-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(139,168,148,0.1); border: 1px solid rgba(139,168,148,0.25); color: #8ba894; font-size: 12px; padding: 6px 12px; border-radius: 20px; margin-bottom: 24px; }
 
   .agent-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 4px; }
+  .stage-group { width: 100%; margin-top: 18px; }
+  .stage-group:first-of-type { margin-top: 6px; }
+  .stage-group-title { font-size: 12.5px; font-weight: 800; color: #8ba894; margin-bottom: 8px; text-align: right; }
+  .stage-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 18px; }
+  @media (max-width: 480px) { .stage-cards { grid-template-columns: 1fr; } }
+  .stage-card {
+    background: #1a211e; border: 1px solid rgba(139,168,148,0.25); border-radius: 16px;
+    padding: 18px 16px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+  }
+  .stage-card:hover { border-color: #8ba894; background: #202924; transform: translateY(-2px); }
+  .stage-card-icon { font-size: 26px; display: block; margin-bottom: 8px; }
+  .stage-card-title { font-weight: 800; font-size: 14px; margin-bottom: 4px; }
+  .stage-card-desc { font-size: 11.5px; color: rgba(237,230,214,0.5); line-height: 1.6; }
+  .stage-detail { width: 100%; margin-top: 12px; }
+  .stage-back-btn {
+    background: none; border: none; color: #8ba894; font-size: 12.5px; font-weight: 700;
+    cursor: pointer; padding: 4px 0; margin-bottom: 14px; display: block;
+  }
   @media (max-width: 480px) { .agent-cards { grid-template-columns: 1fr; } }
   .agent-card {
-    background: #1c252b; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px;
+    background: #1a211c; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px;
     padding: 14px; text-align: right; cursor: pointer; transition: border-color 0.2s, background 0.2s;
   }
   .agent-card:hover { border-color: #8ba894; background: #28312e; }
@@ -132,10 +150,10 @@
   .agent-card .agent-name { font-weight: 800; font-size: 13.5px; margin-bottom: 4px; }
   .agent-card .agent-desc { font-size: 11.5px; color: rgba(237,230,214,0.5); line-height: 1.6; }
 
-  .crm-form { background: #1c252b; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+  .crm-form { background: #1a211c; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px; padding: 14px; margin-bottom: 18px; }
   .crm-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   @media (max-width: 480px) { .crm-form-grid { grid-template-columns: 1fr; } }
-  .crm-form input, .crm-form select, .crm-form textarea { width: 100%; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 8px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 13px; padding: 9px 11px; }
+  .crm-form input, .crm-form select, .crm-form textarea { width: 100%; background: #212a24; border: 1px solid rgba(237,230,214,0.12); border-radius: 8px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 13px; padding: 9px 11px; }
   .crm-add-btn { background: #8ba894; color: #111815; border: none; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; }
 
   .crm-table-wrap { overflow-x: auto; }
@@ -156,7 +174,7 @@
   .messages { display: flex; flex-direction: column; gap: 12px; max-width: 720px; width: 100%; margin: 0 auto; padding-bottom: 8px; }
 
   .bubble { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 14.5px; line-height: 1.85; white-space: pre-wrap; }
-  .bubble.assistant { align-self: flex-start; background: #242e35; border: 1px solid rgba(237,230,214,0.08); border-start-start-radius: 4px; }
+  .bubble.assistant { align-self: flex-start; background: #212a24; border: 1px solid rgba(237,230,214,0.08); border-start-start-radius: 4px; }
   .bubble.user { align-self: flex-end; background: linear-gradient(135deg, #3e6b63, #2c4d47); color: #f2f6f4; border-start-end-radius: 4px; }
   .bubble-image { max-width: 220px; border-radius: 10px; display: block; margin-bottom: 8px; }
 
@@ -169,7 +187,7 @@
   .md-table th { background: rgba(184,146,61,0.14); color: #d9b96a; font-weight: 700; }
   .md-table tr:nth-child(even) td { background: rgba(237,230,214,0.03); }
 
-  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 14px 16px; background: #242e35; border-radius: 14px; border-start-start-radius: 4px; }
+  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 14px 16px; background: #212a24; border-radius: 14px; border-start-start-radius: 4px; }
   .typing span { width: 6px; height: 6px; border-radius: 50%; background: #b8923d; animation: bounce 1.2s infinite ease-in-out; }
   .typing span:nth-child(2) { animation-delay: 0.15s; }
   .typing span:nth-child(3) { animation-delay: 0.3s; }
@@ -179,13 +197,13 @@
 
   .image-preview { position: relative; display: inline-flex; width: fit-content; margin-bottom: 8px; }
   .image-preview img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(237,230,214,0.15); }
-  .remove-image { position: absolute; top: -6px; left: -6px; width: 20px; height: 20px; border-radius: 50%; background: #242e35; border: 1px solid rgba(237,230,214,0.25); color: #ede6d6; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; font-size: 12px; line-height: 1; }
+  .remove-image { position: absolute; top: -6px; left: -6px; width: 20px; height: 20px; border-radius: 50%; background: #212a24; border: 1px solid rgba(237,230,214,0.25); color: #ede6d6; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; font-size: 12px; line-height: 1; }
 
-  label.attach { width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px; background: #242e35; border: 1px solid rgba(237,230,214,0.12); color: rgba(237,230,214,0.75); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s; font-size: 18px; }
+  label.attach { width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px; background: #212a24; border: 1px solid rgba(237,230,214,0.12); color: rgba(237,230,214,0.75); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s; font-size: 18px; }
   label.attach:hover { border-color: #8ba894; color: #8ba894; }
 
   .input-row { display: flex; gap: 10px; align-items: flex-end; }
-  textarea { flex: 1; resize: none; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 12px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 14.5px; padding: 12px 14px; min-height: 46px; max-height: 120px; outline: none; }
+  textarea { flex: 1; resize: none; background: #212a24; border: 1px solid rgba(237,230,214,0.12); border-radius: 12px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 14.5px; padding: 12px 14px; min-height: 46px; max-height: 120px; outline: none; }
   textarea:focus { border-color: #b8923d; }
 
   button.send { background: #8ba894; color: #111815; border: none; border-radius: 12px; padding: 0 18px; height: 46px; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
@@ -203,7 +221,7 @@
   .field-group { margin-bottom: 16px; }
   .field-group label { display: block; font-size: 12.5px; color: rgba(237,230,214,0.6); margin-bottom: 6px; font-weight: 700; }
   .field-group input, .field-group textarea, .field-group select {
-    width: 100%; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 10px;
+    width: 100%; background: #212a24; border: 1px solid rgba(237,230,214,0.12); border-radius: 10px;
     color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 14px; padding: 11px 13px; outline: none;
   }
   .field-group input:focus, .field-group textarea:focus, .field-group select:focus { border-color: #b8923d; }
@@ -215,10 +233,10 @@
   }
   .panel-save-note { display: inline-block; margin-inline-start: 12px; font-size: 12.5px; color: #8ba894; }
 
-  .cal-form { background: #1c252b; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+  .cal-form { background: #1a211c; border: 1px solid rgba(237,230,214,0.1); border-radius: 12px; padding: 14px; margin-bottom: 18px; }
   .cal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   @media (max-width: 480px) { .cal-form-grid { grid-template-columns: 1fr; } }
-  .cal-form input, .cal-form select { width: 100%; background: #242e35; border: 1px solid rgba(237,230,214,0.12); border-radius: 8px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 13px; padding: 9px 11px; }
+  .cal-form input, .cal-form select { width: 100%; background: #212a24; border: 1px solid rgba(237,230,214,0.12); border-radius: 8px; color: #ede6d6; font-family: 'Tajawal', sans-serif; font-size: 13px; padding: 9px 11px; }
   .cal-add-btn { background: #8ba894; color: #111815; border: none; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; }
 
   .cal-table-wrap { overflow-x: auto; }
@@ -290,6 +308,7 @@ const CRM_STATUSES = [
 const AGENTS = [
   {
     id: "brain",
+    stage: 1,
     icon: "🧠",
     name: "العقل المركزي (Business Brain)",
     desc: "بيانات البراند اللي كل الوكلاء بيرجعوا لها",
@@ -297,6 +316,7 @@ const AGENTS = [
   },
   {
     id: "research",
+    stage: 1,
     icon: "🔎",
     name: "وكيل الأبحاث والمنافسين",
     desc: "تحليل السوق، المنافسين، والفرص",
@@ -304,6 +324,7 @@ const AGENTS = [
   },
   {
     id: "strategy",
+    stage: 1,
     icon: "🎯",
     name: "وكيل الاستراتيجية والتحليل",
     desc: "تحليل منافسين، Persona، USP، SWOT",
@@ -311,6 +332,7 @@ const AGENTS = [
   },
   {
     id: "content",
+    stage: 2,
     icon: "✍️",
     name: "وكيل المحتوى",
     desc: "بوستات وكابشنز جاهزة للنشر",
@@ -318,6 +340,7 @@ const AGENTS = [
   },
   {
     id: "creative",
+    stage: 2,
     icon: "🎨",
     name: "وكيل الإبداع",
     desc: "أفكار Reels، Scripts، وConcepts بصرية",
@@ -325,6 +348,7 @@ const AGENTS = [
   },
   {
     id: "ads",
+    stage: 2,
     icon: "📢",
     name: "وكيل الإعلانات الممولة",
     desc: "Campaign structure وAd copies",
@@ -332,6 +356,7 @@ const AGENTS = [
   },
   {
     id: "crm",
+    stage: 3,
     icon: "👥",
     name: "وكيل العملاء (CRM)",
     desc: "متابعة الـ Leads والخطوة الجاية",
@@ -339,6 +364,7 @@ const AGENTS = [
   },
   {
     id: "automation",
+    stage: 3,
     icon: "🤖",
     name: "وكيل الأتمتة",
     desc: "رحلة العميل من Lead لحد Upsell",
@@ -346,6 +372,7 @@ const AGENTS = [
   },
   {
     id: "analytics",
+    stage: 3,
     icon: "📊",
     name: "وكيل تحليل الأداء",
     desc: "قراءة الأرقام واستخراج الـ Insights",
@@ -353,6 +380,7 @@ const AGENTS = [
   },
   {
     id: "optimization",
+    stage: 4,
     icon: "🔁",
     name: "وكيل التحسين المستمر",
     desc: "اختبارات A/B ومقترحات تحسين",
@@ -360,6 +388,7 @@ const AGENTS = [
   },
   {
     id: "governance",
+    stage: 4,
     icon: "🔐",
     name: "وكيل الحوكمة والصلاحيات",
     desc: "قواعد الموافقة قبل أي تنفيذ حساس",
@@ -367,6 +396,7 @@ const AGENTS = [
   },
   {
     id: "integrations",
+    stage: 4,
     icon: "🔌",
     name: "وكيل الربط والتكاملات",
     desc: "خطة ربط Meta/Google/Email وغيرها",
@@ -482,6 +512,13 @@ function makeTitle(text) {
   if (!clean) return "محادثة جديدة";
   return clean.length > 32 ? clean.slice(0, 32) + "…" : clean;
 }
+
+const STAGE_GROUPS = [
+  { id: 1, icon: "🧭", title: "الأساس والاستراتيجية", desc: "بيانات البراند، الأبحاث، والخطة الاستراتيجية" },
+  { id: 2, icon: "🎬", title: "الإنتاج الإبداعي", desc: "محتوى، أفكار إبداعية، وإعلانات ممولة" },
+  { id: 3, icon: "🤝", title: "العملاء والتفاعل", desc: "متابعة العملاء، الأتمتة، وتحليل الأداء" },
+  { id: 4, icon: "🚀", title: "التحسين والحوكمة", desc: "تحسين مستمر، صلاحيات، وربط الأدوات" },
+];
 
 function sharedAgentContextToText(conversations, excludeId) {
   const others = conversations.filter((c) => c.id !== excludeId && c.messages && c.messages.length > 0);
@@ -699,6 +736,7 @@ function MarkoApp() {
   const [pendingImage, setPendingImage] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedStage, setSelectedStage] = useState(null);
   const contentRef = useRef(null);
 
   useEffect(() => { saveJSON(CONV_KEY, conversations); }, [conversations]);
@@ -727,6 +765,7 @@ function MarkoApp() {
     setErrorMsg("");
     setView("chat");
     setSidebarOpen(false);
+    setSelectedStage(null);
   }
 
   function selectConversation(id) {
@@ -789,6 +828,7 @@ function MarkoApp() {
     setErrorMsg("");
     setView("chat");
     setSidebarOpen(false);
+    setSelectedStage(null);
     setInput(agent.prompt);
   }
 
@@ -936,7 +976,6 @@ function MarkoApp() {
           )}
         </div>
 
-        {view === "chat" && !isEmptyChat && <StageRail activeStage={1} />}
 
         <div className="content-area" ref={contentRef}>
           {view === "brand" ? (
@@ -951,15 +990,37 @@ function MarkoApp() {
               <h1 className="landing-title">أهلا، أنا Marko</h1>
               <p className="landing-subtitle">المستشار التنفيذي التسويقي بتاعك. قولي أقدر أساعدك إزاي؟</p>
               {hasBrand && <div className="landing-brand-chip">🏷️ شغالة على براند: {brand.name}</div>}
-              <div className="agent-cards">
-                {AGENTS.map((a) => (
-                  <div key={a.id} className="agent-card" onClick={() => startAgentChat(a)}>
-                    <span className="agent-icon">{a.icon}</span>
-                    <div className="agent-name">{a.name}</div>
-                    <div className="agent-desc">{a.desc}</div>
+
+              {!selectedStage ? (
+                <div className="stage-cards">
+                  {STAGE_GROUPS.map((g) => (
+                    <div key={g.id} className="stage-card" onClick={() => setSelectedStage(g.id)}>
+                      <span className="stage-card-icon">{g.icon}</span>
+                      <div className="stage-card-title">{g.title}</div>
+                      <div className="stage-card-desc">{g.desc}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="stage-detail">
+                  <button className="stage-back-btn" onClick={() => setSelectedStage(null)}>
+                    → كل المراحل
+                  </button>
+                  <div className="stage-group-title">
+                    {STAGE_GROUPS.find((g) => g.id === selectedStage)?.icon}{" "}
+                    {STAGE_GROUPS.find((g) => g.id === selectedStage)?.title}
                   </div>
-                ))}
-              </div>
+                  <div className="agent-cards">
+                    {AGENTS.filter((a) => a.stage === selectedStage).map((a) => (
+                      <div key={a.id} className="agent-card" onClick={() => startAgentChat(a)}>
+                        <span className="agent-icon">{a.icon}</span>
+                        <div className="agent-name">{a.name}</div>
+                        <div className="agent-desc">{a.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="messages">
