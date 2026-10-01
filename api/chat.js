@@ -344,6 +344,7 @@ export default async function handler(req, res) {
 
     try {
       const { text, sources } = await callGroqWithSearch(messages, system, !!forceSearch);
+      if (!text || !text.trim()) throw new Error("empty response");
       return res.status(200).json({ content: [{ type: "text", text: formatWithSources(text, sources) }] });
     } catch (groqErr) {
       try {
