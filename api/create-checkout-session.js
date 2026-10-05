@@ -86,7 +86,7 @@ export default async function handler(req, res) {
       body: body.toString(),
     });
     const session = await stripeRes.json();
-    if (!stripeRes.ok) {
+    if (!stripeRes.ok) {console.error("CHECKOUT_ERR", JSON.stringify(session));
       return res.status(500).json({ error: session.error?.message || "Stripe checkout session failed" });
     }
 
