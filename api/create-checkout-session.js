@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "لازم تسجّلي دخول الأول. / You must be logged in first." });
     }
 
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+  const stripeKey = (process.env.STRIPE_SECRET_KEY || "").trim();
     if (!stripeKey) {
       return res.status(500).json({ error: "STRIPE_SECRET_KEY is not set on the server." });
     }
