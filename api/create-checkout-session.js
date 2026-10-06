@@ -50,6 +50,7 @@ export default async function handler(req, res) {
     }
 
   const stripeKey = (process.env.STRIPE_SECRET_KEY || "").trim();
+    console.error("KEY_INFO", stripeKey.length, stripeKey.slice(0, 8));
     if (!stripeKey) {
       return res.status(500).json({ error: "STRIPE_SECRET_KEY is not set on the server." });
     }
@@ -92,6 +93,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ url: session.url });
   } catch (err) {
+    console.error("CHECKOUT_CATCH", err.message);
     return res.status(500).json({ error: err.message || "Unknown server error" });
   }
 }
