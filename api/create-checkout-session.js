@@ -60,6 +60,7 @@ export default async function handler(req, res) {
 
     const body = toFormParams({
       mode: "subscription",
+      payment_method_types: ["card"],
       success_url: `${origin}?subscribed=1`,
       cancel_url: `${origin}?subscribed=0`,
       client_reference_id: user.id,
